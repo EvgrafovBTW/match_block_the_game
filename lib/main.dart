@@ -1,51 +1,31 @@
-import 'package:flutter/cupertino.dart';
+import 'package:blockgame/constants/colors.dart';
+import 'package:blockgame/router/app_router.dart';
 import 'package:flutter/material.dart';
 
+import 'constants/text_constants.dart';
+
 void main() {
-  runApp(App());
+  runApp(const App());
 }
 
-const String title = 'Match Blocks. THE GAME';
-
-class App extends StatelessWidget {
+class App extends StatefulWidget {
   const App({Key? key}) : super(key: key);
 
   @override
+  State<App> createState() => _AppState();
+}
+
+class _AppState extends State<App> {
+  final AppRouter router = AppRouter();
+  @override
   Widget build(BuildContext context) => MaterialApp(
         debugShowCheckedModeBanner: false,
-        title: title,
+        title: mainTitle,
         theme: ThemeData(
-          scaffoldBackgroundColor: Color.fromARGB(255, 255, 251, 240),
-          primaryColor: Colors.red,
-          primarySwatch: Colors.red,
+          scaffoldBackgroundColor: scaffoldBackground,
+          primarySwatch: pimaryColor,
         ),
-        home: MainMenu(),
+        initialRoute: '/',
+        onGenerateRoute: router.onGeneratedRouter,
       );
-}
-
-class MainMenu extends StatefulWidget {
-  const MainMenu({Key? key}) : super(key: key);
-
-  @override
-  State<MainMenu> createState() => _MainMenuState();
-}
-
-class _MainMenuState extends State<MainMenu> {
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Colors.red,
-        title: Text(title),
-      ),
-      body: SafeArea(
-        child: Center(
-            child:
-                Column(mainAxisAlignment: MainAxisAlignment.center, children: [
-          ElevatedButton(onPressed: () {}, child: Text('играть')),
-          ElevatedButton(onPressed: () {}, child: Text('выход'))
-        ])),
-      ),
-    );
-  }
 }
