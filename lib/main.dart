@@ -5,9 +5,9 @@ void main() {
   runApp(App());
 }
 
-class App extends StatelessWidget {
-  final String title = 'Match Blocks. THE GAME';
+const String title = 'Match Blocks. THE GAME';
 
+class App extends StatelessWidget {
   const App({Key? key}) : super(key: key);
 
   @override
@@ -17,6 +17,7 @@ class App extends StatelessWidget {
         theme: ThemeData(
           scaffoldBackgroundColor: Color.fromARGB(255, 255, 251, 240),
           primaryColor: Colors.red,
+          primarySwatch: Colors.red,
         ),
         home: MainMenu(),
       );
@@ -32,6 +33,19 @@ class MainMenu extends StatefulWidget {
 class _MainMenuState extends State<MainMenu> {
   @override
   Widget build(BuildContext context) {
-    return Scaffold();
+    return Scaffold(
+      appBar: AppBar(
+        backgroundColor: Colors.red,
+        title: Text(title),
+      ),
+      body: SafeArea(
+        child: Center(
+            child:
+                Column(mainAxisAlignment: MainAxisAlignment.center, children: [
+          ElevatedButton(onPressed: () {}, child: Text('играть')),
+          ElevatedButton(onPressed: () {}, child: Text('выход'))
+        ])),
+      ),
+    );
   }
 }
