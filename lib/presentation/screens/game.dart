@@ -1,5 +1,6 @@
 import 'dart:math';
 
+import 'package:blockgame/logic/title_stream.dart';
 import 'package:blockgame/presentation/components/appbars/main_appbar.dart';
 import 'package:blockgame/presentation/components/game_elements/game_cell.dart';
 import 'package:flutter/material.dart';
@@ -19,6 +20,12 @@ class _GameState extends State<Game> {
   Random random = Random();
   int activeCell = 0;
   List<int> cellAmountTypes = [];
+  TitleStream titleStream = TitleStream();
+  @override
+  void didChangeDependencies() {
+    titleStream.stream();
+    super.didChangeDependencies();
+  }
 
   @override
   Widget build(BuildContext context) {
