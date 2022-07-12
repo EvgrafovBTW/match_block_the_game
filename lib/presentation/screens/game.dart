@@ -1,4 +1,6 @@
-import 'dart:math';
+import 'dart:async';
+import 'dart:developer';
+import 'dart:math' as math;
 
 import 'package:blockgame/logic/title_stream.dart';
 import 'package:blockgame/presentation/components/appbars/main_appbar.dart';
@@ -17,18 +19,38 @@ class _GameState extends State<Game> {
   int cellAmountLimit = 20;
   List<bool> cellBoolList = [];
   Color cellColor = Colors.red;
-  Random random = Random();
+  math.Random random = math.Random();
   int activeCell = 0;
+  int nVal = 0;
   List<int> cellAmountTypes = [];
-  TitleStream titleStream = TitleStream();
+  List<String> titles = ['test', 'test2'];
+  List<String> subtitles = [];
+  final titleStream = TitleCreator().stream.asBroadcastStream();
   @override
   void didChangeDependencies() {
-    titleStream.stream();
     super.didChangeDependencies();
   }
 
   @override
   Widget build(BuildContext context) {
+    final testStream =
+        TestStream(toAdd: '').getRandom(t: titles).asBroadcastStream();
+    StreamController controller = StreamController();
+    Stream stream = controller.stream;
+    // final sub = titleStream.listen((event) {
+    //   print('Data: $event');
+    // changeNum(num: event);
+    // });
+
+    testStream.listen((event) {
+      print(event);
+    }, onDone: () async {
+      // await Future.delayed(Duration(seconds: 2));
+      titles.clear();
+      nVal = 0;
+    });
+
+    // List<String> titles = ['default', 'default 2'];
     for (int i = 7; i < cellAmountLimit; i++) {
       cellAmountTypes.add(i * i);
     }
@@ -45,10 +67,9 @@ class _GameState extends State<Game> {
     }
 
     generateFieldCell();
-
     return Scaffold(
       appBar: const MainAppBar(
-        title: 'Так же попробуйте cock',
+        title: 'Так же попробуйте ',
       ),
       body: Center(
         child: Column(
@@ -57,7 +78,7 @@ class _GameState extends State<Game> {
             Text('the game'),
             GridView.builder(
               gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                  crossAxisCount: (sqrt(cellAmount)).ceil(),
+                  crossAxisCount: (math.sqrt(cellAmount)).ceil(),
                   childAspectRatio: cellAmount / cellAmount),
               shrinkWrap: true,
               itemCount: cellAmount,
@@ -72,9 +93,34 @@ class _GameState extends State<Game> {
             ),
             ElevatedButton(
                 onPressed: () {
-                  generateFieldCell();
+                  // generateFieldCell();
+                  // setState(() {
+                  subtitles.add(nVal.toString());
+                  nVal++;
+                  if (nVal > 5) {
+                    setState(() {
+                      titles = subtitles;
+                    });
+                  }
+                  // titles.add('value $nVal');
+                  // });
                 },
-                child: Text('Заново'))
+                child: Text('Заново')),
+            ElevatedButton(
+                onPressed: () {},
+                child: StreamBuilder(
+                  stream: titleStream,
+                  builder: (context, snapshot) {
+                    // if (snapshot.data == 10) {
+                    //   sub.cancel();
+                    // }
+                    if (snapshot.hasData) {
+                      return Text("${snapshot.data}");
+                    } else {
+                      return Text('default');
+                    }
+                  },
+                )),
           ],
         ),
       ),
