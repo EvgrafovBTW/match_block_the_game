@@ -25,48 +25,50 @@ class _GameState extends State<Game> {
   List<int> cellAmountTypes = [];
   List<String> titles = ['test', 'test2'];
   List<String> subtitles = [];
-  final titleStream = TitleCreator().stream.asBroadcastStream();
+  // final titleStream = TitleCreator().stream.asBroadcastStream();
   @override
   void didChangeDependencies() {
+    generateFieldCell();
     super.didChangeDependencies();
+  }
+
+  generateFieldCell() {
+    for (int i = 7; i < cellAmountLimit; i++) {
+      cellAmountTypes.add(i * i);
+    }
+
+    setState(() {
+      cellAmount = cellAmountTypes[random.nextInt(cellAmountTypes.length)];
+      activeCell = random.nextInt(cellAmount);
+      cellBoolList.clear();
+      for (int i = 0; i < cellAmount; i++) {
+        cellBoolList.add(false);
+      }
+      cellBoolList[activeCell] = true;
+    });
   }
 
   @override
   Widget build(BuildContext context) {
-    final testStream =
-        TestStream(toAdd: '').getRandom(t: titles).asBroadcastStream();
-    StreamController controller = StreamController();
-    Stream stream = controller.stream;
+    // final testStream =
+    //     TestStream(toAdd: '').getRandom(t: titles).asBroadcastStream();
+    // StreamController controller = StreamController();
+    // Stream stream = controller.stream;
     // final sub = titleStream.listen((event) {
     //   print('Data: $event');
     // changeNum(num: event);
     // });
 
-    testStream.listen((event) {
-      print(event);
-    }, onDone: () async {
-      // await Future.delayed(Duration(seconds: 2));
-      titles.clear();
-      nVal = 0;
-    });
+    // testStream.listen((event) {
+    //   print(event);
+    // }, onDone: () async {
+    //   // await Future.delayed(Duration(seconds: 2));
+    //   titles.clear();
+    //   nVal = 0;
+    // });
 
     // List<String> titles = ['default', 'default 2'];
-    for (int i = 7; i < cellAmountLimit; i++) {
-      cellAmountTypes.add(i * i);
-    }
-    generateFieldCell() {
-      setState(() {
-        cellAmount = cellAmountTypes[random.nextInt(cellAmountTypes.length)];
-        activeCell = random.nextInt(cellAmount);
-        cellBoolList.clear();
-        for (int i = 0; i < cellAmount; i++) {
-          cellBoolList.add(false);
-        }
-        cellBoolList[activeCell] = true;
-      });
-    }
 
-    generateFieldCell();
     return Scaffold(
       appBar: const MainAppBar(
         title: 'Так же попробуйте ',
@@ -84,7 +86,11 @@ class _GameState extends State<Game> {
               itemCount: cellAmount,
               itemBuilder: (context, index) {
                 return GestureDetector(
-                    onTap: () {},
+                    onTap: () {
+                      setState(() {
+                        cellBoolList[index] = true;
+                      });
+                    },
                     child: GameCell(
                       cellColor: cellColor,
                       isCellActive: cellBoolList[index],
@@ -93,37 +99,40 @@ class _GameState extends State<Game> {
             ),
             ElevatedButton(
                 onPressed: () {
-                  // generateFieldCell();
+                  // setState(() {});
+                  generateFieldCell();
                   // setState(() {
-                  subtitles.add(nVal.toString());
-                  nVal++;
-                  if (nVal > 5) {
-                    setState(() {
-                      titles = subtitles;
-                    });
-                  }
+                  // subtitles.add(nVal.toString());
+                  // nVal++;
+                  // if (nVal > 5) {
+                  //   setState(() {
+                  //     titles = subtitles;
+                  //   });
+                  // }
                   // titles.add('value $nVal');
                   // });
                 },
                 child: Text('Заново')),
-            ElevatedButton(
-                onPressed: () {},
-                child: StreamBuilder(
-                  stream: titleStream,
-                  builder: (context, snapshot) {
-                    // if (snapshot.data == 10) {
-                    //   sub.cancel();
-                    // }
-                    if (snapshot.hasData) {
-                      return Text("${snapshot.data}");
-                    } else {
-                      return Text('default');
-                    }
-                  },
-                )),
+            // ElevatedButton(
+            //     onPressed: () {},
+            //     child: StreamBuilder(
+            //       stream: titleStream,
+            //       builder: (context, snapshot) {
+            //         // if (snapshot.data == 10) {
+            //         //   sub.cancel();
+            //         // }
+            //         if (snapshot.hasData) {
+            //           return Text("${snapshot.data}");
+            //         } else {
+            //           return Text('default');
+            //         }
+            //       },
+            //     )),
           ],
         ),
       ),
     );
   }
 }
+
+enum CellTypes { hero, step, wall }
